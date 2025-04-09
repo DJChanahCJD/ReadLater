@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>稍后阅读</title>
+    <link href="fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #38b2ac;
+            --primary-light: #4fd1ca;
+            --primary-dark: #2c8f8a;
+            --primary-bg: #f7fafa;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border: #e2e8f0;
+            --border-radius: 5px;
+            --danger: #e53e3e;
+            --danger-light: #feb2b2;
+            --card-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            --card-hover-shadow: 0 4px 9px rgba(0, 0, 0, 0.08);
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 360px;
+            max-height: 480px; /* 添加固定高度 */
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* 让容器填充整个高度 */
+        }
+
+        .card-list {
+            flex: 1; /* 让列表填充剩余空间 */
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 8px 12px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-light) transparent;
+            gap: 6px;
+            background-color: var(--primary-bg);
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            height: 64px; /* 添加固定高度 */
+            min-height: 64px; /* 确保最小高度 */
+            flex-shrink: 0; /* 防止卡片被压缩 */
+        }
+
+        .search-container {
+            padding: 6px 12px 0px 12px;
+            background-color: var(--primary-bg);
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+        }
+
+        .search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(56, 178, 172, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            margin-bottom: 2px;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px 8px 32px;
+            border: none;
+            font-size: 14px;
+            background: transparent;
+            color: var(--text-primary);
+        }
+
+        .search-box input:focus {
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 8px 12px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-light) transparent;
+            gap: 6px;
+            background-color: var(--primary-bg);
+        }
+
+        .card-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .card-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .card-list::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: var(--border-radius);
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--primary);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-content {
+            flex: 1;
+            min-width: 0;
+            padding: 8px 12px;
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 550;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .card:hover .card-title {
+            color: var(--primary-dark);
+        }
+
+        .card-url {
+            font-size: 11px;
+            color: var(--text-secondary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .card-date {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-date i {
+            font-size: 12px;
+        }
+
+        .card-url i {
+            font-size: 12px;
+        }
+
+        .card-actions {
+            display: flex;
+            padding-right: 8px;
+        }
+
+        .delete-btn {
+            opacity: 0;
+            width: 28px;
+            height: 28px;
+            border-radius: var(--border-radius);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .card:hover .delete-btn {
+            opacity: 0.8;
+        }
+
+        .delete-btn:hover {
+            background: rgba(56, 178, 172, 0.1);
+            color: var(--primary-dark);
+            opacity: 1;
+        }
+
+        .delete-btn:active {
+            background: rgba(56, 178, 172, 0.2);
+            transform: scale(0.95);
+        }
+
+        .delete-btn i {
+            font-size: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px 12px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .empty-state i {
+            font-size: 20px;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .dragging {
+            opacity: 0.7;
+            background: var(--primary-bg);
+            border: 1px dashed var(--primary);
+            box-shadow: none;
+        }
+
+        .drag-over {
+            border: 1px dashed var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-container">
+            <div class="search-box">
+                <i class="ri-search-line search-icon"></i>
+                <input type="text" id="searchInput" placeholder="搜索链接..." />
+            </div>
+        </div>
+        
+        <div class="card-list" id="cardList">
+            <div class="empty-state">
+                <i class="ri-inbox-line"></i>
+                <span>暂无保存的链接</span>
+            </div>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
