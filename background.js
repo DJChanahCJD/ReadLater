@@ -49,4 +49,3 @@ chrome.runtime.onInstalled.addListener(() => {
       })
     }
   })
-  
