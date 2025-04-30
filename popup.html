@@ -236,6 +236,58 @@
             padding-right: 8px;
         }
 
+        .edit-btn {
+            opacity: 0;
+            width: 28px;
+            height: 28px;
+            border-radius: var(--border-radius);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            flex-shrink: 0;
+            margin-right: 4px;
+        }
+
+        .card:hover .edit-btn {
+            opacity: 0.8;
+        }
+
+        .edit-btn:hover {
+            background: rgba(56, 178, 172, 0.1);
+            color: var(--primary-dark);
+            opacity: 1;
+        }
+
+        .edit-btn:active {
+            background: rgba(56, 178, 172, 0.2);
+            transform: scale(0.95);
+        }
+
+        .edit-btn i {
+            font-size: 16px;
+        }
+
+        .edit-title-input {
+            width: 100%;
+            padding: 2px 4px;
+            border: 1px solid var(--primary);
+            border-radius: var(--border-radius);
+            font-size: 13px;
+            font-weight: 550;
+            color: var(--text-primary);
+            background: white;
+            outline: none;
+        }
+
+        .edit-title-input:focus {
+            box-shadow: 0 0 0 2px rgba(56, 178, 172, 0.2);
+        }
+
         .delete-btn {
             opacity: 0;
             width: 28px;

@@ -63,15 +63,71 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             </div>
             <div class="card-actions">
+            <button class="edit-btn" title="编辑">
+                <i class="ri-edit-line"></i>
+            </button>
             <button class="delete-btn" title="删除">
                 <i class="ri-delete-bin-line"></i>
             </button>
             </div>
         `
 
+        // 添加编辑按钮点击事件
+        const editBtn = card.querySelector(".edit-btn")
+        editBtn.addEventListener("click", (e) => {
+            e.stopPropagation() // 阻止事件冒泡
+            e.preventDefault() // 阻止默认行为
+            
+            const titleElement = card.querySelector(".card-title")
+            const currentTitle = titleElement.textContent
+            
+            // 创建输入框
+            const input = document.createElement("input")
+            input.type = "text"
+            input.value = currentTitle
+            input.className = "edit-title-input"
+            
+            // 阻止输入框的点击事件冒泡
+            input.addEventListener('click', (e) => {
+                e.stopPropagation();
+            })
+            
+            // 替换标题为输入框
+            titleElement.innerHTML = ""
+            titleElement.appendChild(input)
+            input.focus()
+            
+            // 处理输入框失焦和回车事件
+            const handleTitleUpdate = () => {
+                const newTitle = input.value.trim()
+                if (newTitle) {
+                    links[index].title = newTitle
+                    // 保存到存储
+                    chrome.storage.local.set({ readLaterLinks: links }, () => {
+                        renderLinks(links)
+                    })
+                } else {
+                    titleElement.textContent = currentTitle
+                }
+            }
+            
+            input.addEventListener("blur", handleTitleUpdate)
+            input.addEventListener("keyup", (e) => {
+                if (e.key === "Enter") {
+                    handleTitleUpdate()
+                } else if (e.key === "Escape") {
+                    titleElement.textContent = currentTitle
+                }
+            })
+        })
+
         // 点击卡片内容区域跳转
         const cardContent = card.querySelector(".card-content")
-        cardContent.addEventListener("click", () => {
+        cardContent.addEventListener("click", (e) => {
+            // 如果点击的是输入框，不执行跳转
+            if (e.target.classList.contains('edit-title-input')) {
+                return;
+            }
             window.open(link.url, "_blank")
             // 标记为已读
             markAsRead(index)
