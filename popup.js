@@ -129,8 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
             window.open(link.url, "_blank")
-            // 标记为已读
-            markAsRead(index)
         })
 
         // 删除按钮点击事件
@@ -281,6 +279,35 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedItem = null
       draggedIndex = null
     }
+
+    // 添加当前页面按钮点击事件
+    const addCurrentBtn = document.getElementById("addCurrentBtn")
+    addCurrentBtn.addEventListener("click", () => {
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            const currentTab = tabs[0]
+            const url = currentTab.url
+            const title = currentTab.title
+
+            chrome.storage.local.get(["readLaterLinks"], (result) => {
+                const links = result.readLaterLinks || []
+                
+                // 检查链接是否已存在
+                if (!links.some((link) => link.url === url)) {
+                    // 添加新链接到列表开头
+                    links.unshift({
+                        url: url,
+                        title: title,
+                        addedAt: new Date().toISOString(),
+                    })
+
+                    // 保存更新后的链接列表
+                    chrome.storage.local.set({ readLaterLinks: links }, () => {
+                        renderLinks(links)
+                    })
+                }
+            })
+        })
+    })
   
     // 初始加载
     loadLinks()
